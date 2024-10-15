@@ -3,8 +3,6 @@
 
 A fun and simple **React Native** application that fetches and displays random Chuck Norris jokes using the Chuck Norris Joke API. Get ready to laugh with endless jokes at your fingertips!!
 
-[Screenshot_20241015-190851](https://github.com/user-attachments/assets/3daeb6e1-4794-4059-b8c8-c4f5ee942905)
-
 
 ## Features
 
@@ -14,9 +12,8 @@ A fun and simple **React Native** application that fetches and displays random C
 - **Loading and Error Handling**: Smooth transitions with loading indicators and error messages.
 
 ## Screenshots
+![Screenshot_20241015-190851](https://github.com/user-attachments/assets/fff43305-4346-4206-9506-0a73e9275de1)
 
-![Screenshot](https://via.placeholder.com/300x600.png?text=Screenshot+1)
-![Screenshot](https://via.placeholder.com/300x600.png?text=Screenshot+2)
 
 ## Technologies Used
 
