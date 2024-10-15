@@ -1,52 +1,69 @@
-import { Image, StyleSheet, Platform } from 'react-native';
-
+import { Image,Text, StyleSheet, Platform, ScrollView, SafeAreaView, StatusBar, TouchableOpacity } from 'react-native';
+import JokesComponent from './../../components/JokesComponent';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 export default function HomeScreen() {
+  const endpoint = "https://api.chucknorris.io/jokes/random";
+  const [joke, setJoke] = useState({ value: "" }); // Initialize with a matching structure
+  const [loading, setLoading] = useState(true); // Track loading state
+  const [error, setError] = useState(null); // Track errors
+
+  // Fetch data from API on component mount
+  useEffect(() => {
+    
+    fetchData();
+  }, []);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(endpoint);
+      setJoke(response.data); // Store the joke data
+    } catch (err) {
+      setError(err.message); // Handle errors
+    } finally {
+      setLoading(false); // Stop loading indicator
+    }
+  };
+  if (loading) {
+    return (
+      <ThemedView style={styles.loadingContainer}>
+        <ThemedText type="default">Loading...</ThemedText>
+      </ThemedView>
+    );
+  }
+
+  if (error) {
+    return (
+      <ThemedView style={styles.errorContainer}>
+        <ThemedText type="default" style={styles.errorText}>
+          Error: {error}
+        </ThemedText>
+      </ThemedView>
+    );
+  }
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
+        <ThemedText type="title">Chuck Norris Jokes</ThemedText>
       </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      {/* Pass the joke to JokesComponent */}
+      <JokesComponent joke={joke.value} />
+      <TouchableOpacity onPress={fetchData} activeOpacity={0.5} style={styles.btn}>
+        <Text>Next Joke</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
 
@@ -56,15 +73,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 8,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  container: {
+    marginTop: StatusBar.currentHeight,
+    paddingTop:24
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 16,
+    
+  },
+  btn:{
+    backgroundColor:'cyan',
+    width:'50%',
+    textAlign:'center',
+    height:30,
+    justifyContent:'center',
+    alignItems:'center',
+    borderRadius:10,
+    marginTop:50,
+  }
 });
